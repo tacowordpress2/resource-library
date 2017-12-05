@@ -1,0 +1,21 @@
+{
+  "name": "taco-resource-library",
+  "version": "1.0.0",
+  "description": "Vue.js Resource Library for Taco WordPress",
+  "main": "resource-library.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs": "jsdoc2md resource-library.js"
+  },
+  "author": "Ian Zhang",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.17.1",
+    "history": "^4.7.2",
+    "lodash": "^4.17.4",
+    "vue": "^2.5.9"
+  },
+  "devDependencies": {
+    "jsdoc-to-markdown": "^3.0.2"
+  }
+}
