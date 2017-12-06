@@ -79,7 +79,7 @@
 </template>
 
 <script>
-  import ResourceLibrary from 'resource-library';
+  import ResourceLibrary from '@vermilion/taco-resource-library';
 
   let instance = ResourceLibrary();
 
