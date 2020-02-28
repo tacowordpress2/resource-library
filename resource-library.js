@@ -1,7 +1,7 @@
-import Vue from 'vue';
+import Vue from "vue/dist/vue.js";
 import axios from 'axios';
 import _ from 'lodash';
-import createHistory from 'history/createBrowserHistory';
+import { createBrowserHistory as createHistory} from 'history';
 
 /**
  * Vue.js Resource Library for Taco WordPress
@@ -84,10 +84,19 @@ function getScript() {
       if (!window.location.search) {
         this.reset(); // Initialize params to initial values
       } else {
-        this.params = _.merge(
+        let params = _.merge(
           this.initialParams(),
-          this.unserializeParams(window.location.search)
+          this.initial_taxonomies,
         );
+
+        let search_params = this.unserializeParams(window.location.search);
+        _.each(search_params, (value, name) => {
+          if (typeof params[name] !== 'undefined') {
+            params[name] = value;
+          }
+        });
+
+        this.params = params;
       }
 
       this.__initHistory();
@@ -258,6 +267,7 @@ function getScript() {
         params: {},
         error: null,
         loading: true,
+        bundler: 'Parcel',
       };
     },
     /* WATCH PARAMS */
@@ -267,7 +277,6 @@ function getScript() {
           if (this.__page_updated === false) {
             this.params.pagenum = 1;
           }
-
           this.__fetchData();
           this.__page_updated = false;
 
@@ -314,7 +323,12 @@ function getScript() {
        */
       __fetchData: function() {
         this.loading = true;
-        this.triggerRootEvent('loading');
+
+        if (this.__is_initial_load === true) {
+          this.triggerRootEvent('initial_data_loading');
+        } else {
+          this.triggerRootEvent('data_loading');
+        }
 
         axios.get(this.post_type, {
           baseURL: this.__api_base_url,
@@ -336,6 +350,9 @@ function getScript() {
           if (this.__is_initial_load === true) {
             this.onInitialLoad();
             this.__is_initial_load = false;
+            this.triggerRootEvent('initial_data_loaded');
+          } else {
+            this.triggerRootEvent('data_loaded');
           }
         })
         .catch((error) => {
@@ -547,7 +564,7 @@ function getScript() {
        */
       setMetaFilter: function(field, value) {
         Vue.set(this.params.meta_query, field, {
-          field: field,
+          key: field,
           value: value,
         });
       },
